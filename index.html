@@ -107,6 +107,135 @@
             border-radius: 15px;
         }
 
+        /* Video Container styled for fullscreen request */
+        video {
+            width: 100%;
+            max-height: 450px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background-color: black;
+        }
+
+        /* Fullscreen handling style */
+        video:-webkit-full-screen { width: 100%; height: 100%; max-height: 100%; }
+        video:-moz-full-screen { width: 100%; height: 100%; max-height: 100%; }
+        video:fullscreen { width: 100%; height: 100%; max-height: 100%; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card active" id="screen-note1">
+        <h2>Hey! ✨</h2>
+        <p>Aaj ek bohot special din hai, aur mere paas tumhare liye kuch chhota sa surprise hai...</p>
+        <button class="btn" onclick="nextScreen('screen-note1', 'screen-note2')">Next 👉</button>
+    </div>
+
+    <div class="card" id="screen-note2">
+        <h2>But wait... 🤔</h2>
+        <p>Aage badhne se pehle, bas itna batana chahta hu ki tum mere liye kitne special ho. Thank you for always being there!</p>
+        <button class="btn" onclick="nextScreen('screen-note2', 'screen-envelope')">Next 👉</button>
+    </div>
+
+    <div class="card" id="screen-envelope">
+        <h2>You've got mail! ✉️</h2>
+        <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()"></div>
+        <p style="font-weight: bold; color: #ff477e;">Click the envelope to open!</p>
+    </div>
+
+    <div class="card" id="screen-slider">
+        <h3>Some Beautiful Memories 📸</h3>
+        <div class="slider-container">
+            <div class="slides" id="slides">
+                <div class="slide"><img src="photo1.jpg" alt="Memory 1"></div>
+                <div class="slide"><img src="photo2.jpg" alt="Memory 2"></div>
+                <div class="slide"><img src="photo3.jpg" alt="Memory 3"></div>
+                <div class="slide"><img src="photo4.jpg" alt="Memory 4"></div>
+                <div class="slide"><img src="photo5.jpg" alt="Memory 5"></div>
+            </div>
+        </div>
+        <p id="slide-count">1 / 5</p>
+        <button class="btn" id="slider-btn" onclick="nextSlide()">Next Photo ➔</button>
+    </div>
+
+    <div class="card" id="screen-video">
+        <h2>The Main Surprise! 🎉🎬</h2>
+        <p>I hope you like this edit...</p>
+        <video id="birthdayVideo" controls preload="auto" playsinline>
+            <source src="edit.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+</div>
+
+<script>
+    // Navigation Logic
+    function nextScreen(currentId, nextId) {
+        document.getElementById(currentId).classList.remove('active');
+        document.getElementById(nextId).classList.add('active');
+    }
+
+    // Envelope Logic
+    function openEnvelope() {
+        const env = document.getElementById('envelope');
+        env.classList.add('open');
+        setTimeout(() => {
+            nextScreen('screen-envelope', 'screen-slider');
+        }, 800);
+    }
+
+    // Slider Logic
+    let currentSlide = 0;
+    const totalSlides = 5;
+
+    function nextSlide() {
+        currentSlide++;
+        const slides = document.getElementById('slides');
+        const sliderBtn = document.getElementById('slider-btn');
+        const countText = document.getElementById('slide-count');
+
+        if (currentSlide < totalSlides) {
+            slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+            countText.innerText = `${currentSlide + 1} / 5`;
+            
+            if (currentSlide === totalSlides - 1) {
+                sliderBtn.innerText = "See the Final Surprise! 🎁";
+            }
+        } else {
+            // Slider khatam, screen switch karo
+            nextScreen('screen-slider', 'screen-video');
+            
+            const video = document.getElementById('birthdayVideo');
+            
+            // Fullscreen Trigger Function
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) { /* Safari / iOS handles */
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
+            }
+
+            // Video Play logic
+            video.play().catch(error => {
+                console.log("Autoplay policy blocked, waiting for manual click.");
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
+            border-radius: 15px;
+        }
+
         /* Video Container */
         video {
             width: 100%;
